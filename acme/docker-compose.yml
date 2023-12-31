@@ -1,0 +1,27 @@
+version: '3'
+
+
+services:
+  acme_rabbitmq:
+    image: rabbitmq:3.7.8-management
+    container_name: acme_rabbitmq
+    hostname: acme_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "5671:5671"
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+
+  acme_products_queries:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: acme_products_queries
+    environment:
+      - SPRING_RABBITMQ_HOST=acme_rabbitmq
+    ports:
+      - "8090:8090"
+    depends_on:
+      - acme_rabbitmq
