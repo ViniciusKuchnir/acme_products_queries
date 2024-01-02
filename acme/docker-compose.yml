@@ -13,6 +13,11 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   acme_products_queries:
     build:
@@ -24,4 +29,5 @@ services:
     ports:
       - "8090:8090"
     depends_on:
-      - acme_rabbitmq
+      acme_rabbitmq:
+        condition: service_healthy
